@@ -16,20 +16,41 @@ public class ConsultasComJPQL {
 
         //primeiraConsulta(entityManager);
         //escolhendoORetorno(entityManager);
-        fazendoProjecoes(entityManager);
+        //fazendoProjecoes(entityManager);
+        passandoParametros(entityManager);
 
         entityManager.close();
         entityManagerFactory.close();
     }
 
+    public static void passandoParametros(EntityManager entityManager) {
+
+        String jpql = "select u from Usuario u where u.id = :idUsuario";
+        TypedQuery<Usuario> typedQuery = entityManager.
+                createQuery(jpql, Usuario.class).
+                setParameter("idUsuario", 1);
+        Usuario usuario = typedQuery.getSingleResult();
+        System.out.println(usuario.getId() + ", " + usuario.getNome());
+
+
+        String jpqlLog = "select u from Usuario u where u.login = :loginUsuario";
+        TypedQuery<Usuario> typedQueryLog = entityManager.
+                createQuery(jpqlLog, Usuario.class).
+                setParameter("loginUsuario", "ria");
+        Usuario usuarioLog = typedQueryLog.getSingleResult();
+        System.out.println(usuarioLog.getId() + ", " + usuarioLog.getNome());
+    }
+
     public static void fazendoProjecoes(EntityManager entityManager){
         /*
+        // Projecao com array
         String jpqlArr = "select id, login, nome from Usuario";
         TypedQuery<Object[]> typedQueryArr = entityManager.createQuery(jpqlArr, Object[].class);
         List<Object[]> listaArr = typedQueryArr.getResultList();
         listaArr.forEach(arr -> System.out.println(String.format("%s, %s, %s", arr)));
         */
 
+        // Usando projecão com o DTO
         String jpqlDto = "select new com.algaworks.sistemausuarios.dto.UsuarioDTO(id, login, nome)" +
                 "from Usuario";
         TypedQuery<UsuarioDTO> typedQueryDto = entityManager.createQuery(jpqlDto, UsuarioDTO.class);
