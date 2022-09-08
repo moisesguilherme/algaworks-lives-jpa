@@ -1,6 +1,7 @@
 package com.algaworks.sistemausuarios;
 
 import com.algaworks.sistemausuarios.dto.UsuarioDTO;
+import com.algaworks.sistemausuarios.model.Configuracao;
 import com.algaworks.sistemausuarios.model.Dominio;
 import com.algaworks.sistemausuarios.model.Usuario;
 
@@ -18,12 +19,29 @@ public class ConsultasComJPQL {
         //escolhendoORetorno(entityManager);
         //fazendoProjecoes(entityManager);
         //passandoParametros(entityManager);
-        fazendoJoins(entityManager);
-
+        //fazendoJoins(entityManager);
+        fazendoLeftJoin(entityManager);
         entityManager.close();
         entityManagerFactory.close();
     }
 
+
+    public static void fazendoLeftJoin(EntityManager entityManager){
+        String jpql = "select u, c from Usuario u left join u.configuracao c";
+        TypedQuery<Object[]> typedQuery = entityManager.createQuery(jpql, Object[].class);
+        List<Object[]> lista = typedQuery.getResultList();
+
+        lista.forEach(arr -> {
+            String out = ((Usuario) arr[0]).getNome();
+            if(arr[1] == null) {
+                out += ", NULL";
+            }else{
+                out += ", " + ((Configuracao) arr[1]).getId();
+            }
+
+            System.out.println(out);
+        });
+    }
 
     public static void fazendoJoins(EntityManager entityManager) {
         String jpql = "select u from Usuario u join u.dominio d where d.id = 1";

@@ -11,7 +11,7 @@ public class Configuracao {
     @Id
     private Integer id;
 
-    @MapsId
+    @MapsId //chave estrangeira é a mesma que a primaria
     @OneToOne
     private Usuario usuario;
 
