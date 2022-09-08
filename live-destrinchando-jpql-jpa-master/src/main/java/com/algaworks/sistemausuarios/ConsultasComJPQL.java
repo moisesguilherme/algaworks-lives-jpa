@@ -1,5 +1,6 @@
 package com.algaworks.sistemausuarios;
 
+import com.algaworks.sistemausuarios.dto.UsuarioDTO;
 import com.algaworks.sistemausuarios.model.Dominio;
 import com.algaworks.sistemausuarios.model.Usuario;
 
@@ -14,10 +15,26 @@ public class ConsultasComJPQL {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         //primeiraConsulta(entityManager);
-        escolhendoORetorno(entityManager);
+        //escolhendoORetorno(entityManager);
+        fazendoProjecoes(entityManager);
 
         entityManager.close();
         entityManagerFactory.close();
+    }
+
+    public static void fazendoProjecoes(EntityManager entityManager){
+        /*
+        String jpqlArr = "select id, login, nome from Usuario";
+        TypedQuery<Object[]> typedQueryArr = entityManager.createQuery(jpqlArr, Object[].class);
+        List<Object[]> listaArr = typedQueryArr.getResultList();
+        listaArr.forEach(arr -> System.out.println(String.format("%s, %s, %s", arr)));
+        */
+
+        String jpqlDto = "select new com.algaworks.sistemausuarios.dto.UsuarioDTO(id, login, nome)" +
+                "from Usuario";
+        TypedQuery<UsuarioDTO> typedQueryDto = entityManager.createQuery(jpqlDto, UsuarioDTO.class);
+        List<UsuarioDTO> listaDto = typedQueryDto.getResultList();
+        listaDto.forEach(u -> System.out.println("DTO: " + u.getId() + " " + u.getLogin() + " " + u.getNome()));
     }
 
     public static void escolhendoORetorno(EntityManager entityManager) {
