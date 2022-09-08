@@ -17,10 +17,22 @@ public class ConsultasComJPQL {
         //primeiraConsulta(entityManager);
         //escolhendoORetorno(entityManager);
         //fazendoProjecoes(entityManager);
-        passandoParametros(entityManager);
+        //passandoParametros(entityManager);
+        fazendoJoins(entityManager);
 
         entityManager.close();
         entityManagerFactory.close();
+    }
+
+
+    public static void fazendoJoins(EntityManager entityManager) {
+        String jpql = "select u from Usuario u join u.dominio d where d.id = 1";
+        // Se fosse em SQL
+        //String sql = "select u.* from usuario u join dominio d on u.dominio_id = d.id";
+        TypedQuery<Usuario> typedQuery = entityManager.createQuery(jpql, Usuario.class);
+        List<Usuario> lista = typedQuery.getResultList();
+        lista.forEach(u -> System.out.println(u.getId() + ", " + u.getNome()));
+
     }
 
     public static void passandoParametros(EntityManager entityManager) {
