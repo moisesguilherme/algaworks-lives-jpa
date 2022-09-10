@@ -20,18 +20,31 @@ public class ConsultasComJPQL {
         //fazendoProjecoes(entityManager);
         //passandoParametros(entityManager);
         //fazendoJoins(entityManager);
-        fazendoLeftJoin(entityManager);
+        //fazendoLeftJoin(entityManager);
+        carregamentoComJoinFetch(entityManager);
+
         entityManager.close();
         entityManagerFactory.close();
     }
-
+    public static void carregamentoComJoinFetch(EntityManager entityManager){
+        // String jpql = "select u from Usuario u"; // Busca e problema n+1 consultas faz mais 1 consulta de configuracão para cada usuário
+        // Executa somente uma consulta
+        String jpql = "select u from Usuario u join fetch u.configuracao join fetch u.dominio d";
+        TypedQuery<Usuario> typedQuery = entityManager.createQuery(jpql, Usuario.class);
+        List<Usuario> lista = typedQuery.getResultList();
+        lista.forEach(u -> System.out.println(u.getId() + ", " + u.getNome()));
+    }
 
     public static void fazendoLeftJoin(EntityManager entityManager){
+        // u, c fazendo projecão
         String jpql = "select u, c from Usuario u left join u.configuracao c";
         TypedQuery<Object[]> typedQuery = entityManager.createQuery(jpql, Object[].class);
         List<Object[]> lista = typedQuery.getResultList();
 
         lista.forEach(arr -> {
+            // arr[0] == Usuario
+            // arr[1] == Cconfiguracao
+
             String out = ((Usuario) arr[0]).getNome();
             if(arr[1] == null) {
                 out += ", NULL";
