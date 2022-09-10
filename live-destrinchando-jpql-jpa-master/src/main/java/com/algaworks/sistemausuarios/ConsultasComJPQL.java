@@ -21,10 +21,36 @@ public class ConsultasComJPQL {
         //passandoParametros(entityManager);
         //fazendoJoins(entityManager);
         //fazendoLeftJoin(entityManager);
-        carregamentoComJoinFetch(entityManager);
+        //carregamentoComJoinFetch(entityManager);
+        filtrandoRegistros(entityManager);
 
         entityManager.close();
         entityManagerFactory.close();
+    }
+
+    public static void filtrandoRegistros(EntityManager entityManager){
+        // LIKE, IS NULL, IS EMPTY, BETWEEN, >, <, >=, <=, =, <>
+        // IS NULL = select u from Usuario u where u.senha is null
+        // IS EMPTY = select d from Dominio d where d.usuario is empty
+        // BETWEEN
+
+        //String jpql = "select u from Usuario u where u.nome like concat(:nomeUsuario, '%')";
+        //String jpql = "select u from Usuario u where u.senha is null";
+        String jpql = "select u from Usuario u where u.ultimoAcesso between :ontem and :hoje";
+        TypedQuery<Usuario> typedQuery = entityManager.createQuery(jpql, Usuario.class)
+                .setParameter("ontem", LoocalDateTime.now());
+                //.setParameter("nomeUsuario", "Cal"); // ou "Cal%"
+        List<Usuario> lista = typedQuery.getResultList();
+        lista.forEach(u -> System.out.println(u.getId() + ", " + u.getNome()));
+
+
+        // Dominio empty
+        /*
+        String jpql = " select d from Dominio d where d.usuarios is empty";
+        TypedQuery<Dominio> typedQuery = entityManager.createQuery(jpql, Dominio.class);
+        List<Dominio> lista = typedQuery.getResultList();
+        lista.forEach(d -> System.out.println(d.getId() + ", " + d.getNome()));
+         */
     }
     public static void carregamentoComJoinFetch(EntityManager entityManager){
         // String jpql = "select u from Usuario u"; // Busca e problema n+1 consultas faz mais 1 consulta de configuracão para cada usuário
