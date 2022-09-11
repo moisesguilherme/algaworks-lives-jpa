@@ -6,6 +6,9 @@ import com.algaworks.sistemausuarios.model.Dominio;
 import com.algaworks.sistemausuarios.model.Usuario;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +20,7 @@ public class ConsultasComJPQL {
                 .createEntityManagerFactory("Usuarios-PU");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-        //primeiraConsulta(entityManager);
+        primeirasConsulta(entityManager);
         //escolhendoORetorno(entityManager);
         //fazendoProjecoes(entityManager);
         //passandoParametros(entityManager);
@@ -28,7 +31,7 @@ public class ConsultasComJPQL {
         //utilizandoOperadoresLogicos(entityManager);
         //utilizandoOperadoreIn(entityManager);
         //ordenandoResultados(entityManager);
-        paginandoResultados(entityManager);
+        //paginandoResultados(entityManager);
 
         entityManager.close();
         entityManagerFactory.close();
@@ -182,7 +185,18 @@ public class ConsultasComJPQL {
         //lista.forEach(u -> System.out.println(u.getId() + ", " + u.getNome()));
     }
 
-    public static void primeiraConsulta(EntityManager entityManager) {
+    public static void primeirasConsulta(EntityManager entityManager) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Usuario> criteriaQuery = criteriaBuilder.createQuery(Usuario.class);
+        Root<Usuario> root = criteriaQuery.from(Usuario.class);
+
+        criteriaQuery.select(root);
+
+        TypedQuery<Usuario> typedQuery = entityManager.createQuery(criteriaQuery);
+        List<Usuario> lista = typedQuery.getResultList();
+        lista.forEach(u -> System.out.println(u.getId() + ", " + u.getNome()));
+
+        /*
         String jpql = "select u from Usuario u";
         TypedQuery<Usuario> typedQuery = entityManager.createQuery(jpql, Usuario.class);
         List<Usuario> lista = typedQuery.getResultList();
@@ -197,6 +211,7 @@ public class ConsultasComJPQL {
         Query query = entityManager.createQuery(jpqlCast);
         Usuario usuario2 = (Usuario) query.getSingleResult();
         System.out.println(usuario2.getId() + ", " + usuario2.getNome());
+         */
 
     }
 
