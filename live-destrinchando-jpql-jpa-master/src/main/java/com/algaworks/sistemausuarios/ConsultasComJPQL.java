@@ -26,12 +26,19 @@ public class ConsultasComJPQL {
         //carregamentoComJoinFetch(entityManager);
         //filtrandoRegistros(entityManager);
         //utilizandoOperadoresLogicos(entityManager);
-        utilizandoOperadoreIn(entityManager);
+        //utilizandoOperadoreIn(entityManager);
+        ordenandoResultados(entityManager);
 
         entityManager.close();
         entityManagerFactory.close();
     }
 
+    public static void ordenandoResultados(EntityManager entityManager){
+        String jpql = "select u from Usuario u order by u.nome";
+        TypedQuery<Usuario> typedQuery = entityManager.createQuery(jpql, Usuario.class);
+        List<Usuario> lista = typedQuery.getResultList();
+        lista.forEach(u -> System.out.println(u.getId() + ", " + u.getNome()));
+    }
     public static void utilizandoOperadoreIn(EntityManager entityManager){
         String jpql = "select u from Usuario u where u.id in (:ids)";
         TypedQuery<Usuario> typedQuery = entityManager.createQuery(jpql, Usuario.class)
