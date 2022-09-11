@@ -23,10 +23,24 @@ public class ConsultasComJPQL {
         //fazendoJoins(entityManager);
         //fazendoLeftJoin(entityManager);
         //carregamentoComJoinFetch(entityManager);
-        filtrandoRegistros(entityManager);
+        //filtrandoRegistros(entityManager);
+        utilizandoOperadoresLogicos(entityManager);
 
         entityManager.close();
         entityManagerFactory.close();
+    }
+
+    public static void utilizandoOperadoresLogicos(EntityManager entityManager){
+        String jpql = "select u from Usuario u where " +
+                "(u.ultimoAcesso > :ontem and u.ultimoAcesso < :hoje)" +
+                "or u.ultimoAcesso is null";
+        TypedQuery<Usuario> typedQuery = entityManager.createQuery(jpql, Usuario.class)
+                .setParameter("ontem", LocalDateTime.now().minusDays(1))
+                .setParameter("hoje", LocalDateTime.now());
+        List<Usuario> lista = typedQuery.getResultList();
+        lista.forEach(u -> System.out.println(u.getId() + ", " + u.getNome()));
+
+
     }
 
     public static void filtrandoRegistros(EntityManager entityManager){
@@ -44,7 +58,6 @@ public class ConsultasComJPQL {
                 //.setParameter("nomeUsuario", "Cal"); // ou "Cal%"
         List<Usuario> lista = typedQuery.getResultList();
         lista.forEach(u -> System.out.println(u.getId() + ", " + u.getNome()));
-
 
         // Dominio empty
         /*
