@@ -27,10 +27,19 @@ public class ConsultasComJPQL {
         //filtrandoRegistros(entityManager);
         //utilizandoOperadoresLogicos(entityManager);
         //utilizandoOperadoreIn(entityManager);
-        ordenandoResultados(entityManager);
+        //ordenandoResultados(entityManager);
+        paginandoResultados(entityManager);
 
         entityManager.close();
         entityManagerFactory.close();
+    }
+    public static void paginandoResultados(EntityManager entityManager){
+        String jpql = "select u from Usuario u";
+        TypedQuery<Usuario> typedQuery = entityManager.createQuery(jpql, Usuario.class)
+                .setFirstResult(0)
+                .setMaxResults(2);
+        List<Usuario> lista = typedQuery.getResultList();
+        lista.forEach(u -> System.out.println(u.getId() + ", " + u.getNome()));
     }
 
     public static void ordenandoResultados(EntityManager entityManager){
