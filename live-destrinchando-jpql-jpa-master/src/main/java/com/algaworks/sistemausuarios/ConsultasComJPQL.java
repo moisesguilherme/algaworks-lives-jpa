@@ -6,6 +6,7 @@ import com.algaworks.sistemausuarios.model.Dominio;
 import com.algaworks.sistemausuarios.model.Usuario;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class ConsultasComJPQL {
@@ -32,13 +33,14 @@ public class ConsultasComJPQL {
         // LIKE, IS NULL, IS EMPTY, BETWEEN, >, <, >=, <=, =, <>
         // IS NULL = select u from Usuario u where u.senha is null
         // IS EMPTY = select d from Dominio d where d.usuario is empty
-        // BETWEEN
-
         //String jpql = "select u from Usuario u where u.nome like concat(:nomeUsuario, '%')";
         //String jpql = "select u from Usuario u where u.senha is null";
+
+        // BETWEEN
         String jpql = "select u from Usuario u where u.ultimoAcesso between :ontem and :hoje";
         TypedQuery<Usuario> typedQuery = entityManager.createQuery(jpql, Usuario.class)
-                .setParameter("ontem", LoocalDateTime.now());
+                .setParameter("ontem", LocalDateTime.now().minusDays(1))
+                .setParameter("hoje", LocalDateTime.now());
                 //.setParameter("nomeUsuario", "Cal"); // ou "Cal%"
         List<Usuario> lista = typedQuery.getResultList();
         lista.forEach(u -> System.out.println(u.getId() + ", " + u.getNome()));
