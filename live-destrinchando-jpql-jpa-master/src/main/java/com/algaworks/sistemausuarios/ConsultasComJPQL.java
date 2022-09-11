@@ -190,6 +190,7 @@ public class ConsultasComJPQL {
     }
 
     public static void escolhendoORetornoComCriteria(EntityManager entityManager) {
+        /*
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Dominio> criteriaQuery = criteriaBuilder.createQuery(Dominio.class);
         Root<Usuario> root = criteriaQuery.from(Usuario.class);
@@ -199,7 +200,17 @@ public class ConsultasComJPQL {
         TypedQuery<Dominio> typedQuery = entityManager.createQuery(criteriaQuery);
         List<Dominio> lista = typedQuery.getResultList();
         lista.forEach(d -> System.out.println(d.getId() + ", " + d.getNome()));
+        */
 
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<String> criteriaQuery = criteriaBuilder.createQuery(String.class);
+        Root<Usuario> root = criteriaQuery.from(Usuario.class);
+
+        criteriaQuery.select(root.get("nome"));
+
+        TypedQuery<String> typedQuery = entityManager.createQuery(criteriaQuery);
+        List<String> lista = typedQuery.getResultList();
+        lista.forEach(nome -> System.out.println("Nome: " + nome));
 
         /*
         // o from é usuário e select é o dominio
