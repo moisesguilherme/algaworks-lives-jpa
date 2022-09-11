@@ -7,6 +7,7 @@ import com.algaworks.sistemausuarios.model.Usuario;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 public class ConsultasComJPQL {
@@ -24,12 +25,20 @@ public class ConsultasComJPQL {
         //fazendoLeftJoin(entityManager);
         //carregamentoComJoinFetch(entityManager);
         //filtrandoRegistros(entityManager);
-        utilizandoOperadoresLogicos(entityManager);
+        //utilizandoOperadoresLogicos(entityManager);
+        utilizandoOperadoreIn(entityManager);
 
         entityManager.close();
         entityManagerFactory.close();
     }
 
+    public static void utilizandoOperadoreIn(EntityManager entityManager){
+        String jpql = "select u from Usuario u where u.id in (:ids)";
+        TypedQuery<Usuario> typedQuery = entityManager.createQuery(jpql, Usuario.class)
+                .setParameter("ids", Arrays.asList(1,2));
+        List<Usuario> lista = typedQuery.getResultList();
+        lista.forEach(u -> System.out.println(u.getId() + ", " + u.getNome()));
+    }
     public static void utilizandoOperadoresLogicos(EntityManager entityManager){
         String jpql = "select u from Usuario u where " +
                 "(u.ultimoAcesso > :ontem and u.ultimoAcesso < :hoje)" +
@@ -39,8 +48,6 @@ public class ConsultasComJPQL {
                 .setParameter("hoje", LocalDateTime.now());
         List<Usuario> lista = typedQuery.getResultList();
         lista.forEach(u -> System.out.println(u.getId() + ", " + u.getNome()));
-
-
     }
 
     public static void filtrandoRegistros(EntityManager entityManager){
