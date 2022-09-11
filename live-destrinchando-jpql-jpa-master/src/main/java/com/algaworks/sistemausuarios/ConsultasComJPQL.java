@@ -20,7 +20,11 @@ public class ConsultasComJPQL {
                 .createEntityManagerFactory("Usuarios-PU");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-        primeirasConsulta(entityManager);
+        // Com Criteria
+        //primeirasConsultaComCriteria(entityManager);
+        escolhendoORetornoComCriteria(entityManager);
+
+        // Com JPQL
         //escolhendoORetorno(entityManager);
         //fazendoProjecoes(entityManager);
         //passandoParametros(entityManager);
@@ -185,7 +189,39 @@ public class ConsultasComJPQL {
         //lista.forEach(u -> System.out.println(u.getId() + ", " + u.getNome()));
     }
 
-    public static void primeirasConsulta(EntityManager entityManager) {
+    public static void escolhendoORetornoComCriteria(EntityManager entityManager) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Dominio> criteriaQuery = criteriaBuilder.createQuery(Dominio.class);
+        Root<Usuario> root = criteriaQuery.from(Usuario.class);
+
+        criteriaQuery.select(root.get("dominio"));
+
+        TypedQuery<Dominio> typedQuery = entityManager.createQuery(criteriaQuery);
+        List<Dominio> lista = typedQuery.getResultList();
+        lista.forEach(d -> System.out.println(d.getId() + ", " + d.getNome()));
+
+
+        /*
+        // o from é usuário e select é o dominio
+        String jpql = "select u.dominio from Usuario u where u.id = 1";
+        TypedQuery<Dominio> typedQuery = entityManager.createQuery(jpql, Dominio.class);
+        Dominio dominio = typedQuery.getSingleResult();
+        System.out.println(dominio.getId() + ", " + dominio.getNome());
+
+        String jpqlNom = "select u.nome from Usuario u";
+        TypedQuery<String> typedQueryNom = entityManager.createQuery(jpqlNom, String.class);
+        List<String> listaNome = typedQueryNom.getResultList();
+        listaNome.forEach(nome -> System.out.println(nome));
+
+        // String jpql = "select u from Usuario u";
+        // TypedQuery<Usuario> typedQuery = entityManager.createQuery(jpql, Usuario.class);
+        // List<Usuario> lista = typedQuery.getResultList();
+        //lista.forEach(u -> System.out.println(u.getId() + ", " + u.getNome()));
+         */
+    }
+
+
+    public static void primeirasConsultaComCriteria(EntityManager entityManager) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Usuario> criteriaQuery = criteriaBuilder.createQuery(Usuario.class);
         Root<Usuario> root = criteriaQuery.from(Usuario.class);
@@ -197,6 +233,18 @@ public class ConsultasComJPQL {
         lista.forEach(u -> System.out.println(u.getId() + ", " + u.getNome()));
 
         /*
+        // Para efeito de comparacão sem criteria
+        String jpql = "select u from Usuario u";
+        TypedQuery<Usuario> typedQuery = entityManager.createQuery(jpql, Usuario.class);
+        List<Usuario> lista = typedQuery.getResultList();
+        lista.forEach(u -> System.out.println(u.getId() + ", " + u.getNome()));
+         */
+
+
+    }
+
+    public static void primeirasConsulta(EntityManager entityManager) {
+
         String jpql = "select u from Usuario u";
         TypedQuery<Usuario> typedQuery = entityManager.createQuery(jpql, Usuario.class);
         List<Usuario> lista = typedQuery.getResultList();
@@ -211,8 +259,6 @@ public class ConsultasComJPQL {
         Query query = entityManager.createQuery(jpqlCast);
         Usuario usuario2 = (Usuario) query.getSingleResult();
         System.out.println(usuario2.getId() + ", " + usuario2.getNome());
-         */
-
     }
 
 
